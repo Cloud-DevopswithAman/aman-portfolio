@@ -17,6 +17,9 @@
     --green: #3ECF8E;
     --amber: #F0B429;
     --red: #E5534B;
+    --teal: #2DD4BF;
+    --purple: #A78BFA;
+    --coral: #FB923C;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
     --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
@@ -172,6 +175,51 @@
   .term-line.result .k{ color: var(--text-faint); }
   .term-line.result .conf{ color: var(--amber); font-weight: 700; }
 
+  /* ---------- architecture flow (signal path diagram) ---------- */
+  .arch-flow{ margin-top: 32px; display:flex; flex-direction: column; }
+  .arch-eyebrow{
+    font-family: var(--mono); font-size: 11px; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;
+  }
+  .arch-step{ display:flex; gap: 18px; }
+  .arch-marker{ display:flex; flex-direction:column; align-items:center; width: 12px; flex-shrink: 0; padding-top: 22px; }
+  .arch-dot{
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    animation: dotpulse 2.4s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .arch-dot{ animation: none; } }
+  @keyframes dotpulse{ 0%,100%{ box-shadow: 0 0 0 0 currentColor; opacity:1; } 50%{ box-shadow: 0 0 0 6px transparent; opacity:0.75; } }
+  .arch-line{ flex: 1; width: 2px; min-height: 26px; background: var(--border-strong); margin-top: 2px; }
+  .arch-box{
+    flex: 1; background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 14px;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+  }
+  .arch-box:hover{ transform: translateX(3px); }
+  .arch-box h4{ font-size: 14.5px; font-weight: 600; margin-bottom: 6px; }
+  .arch-box p{ font-size: 13.5px; color: var(--text-dim); }
+
+  .c-gray .arch-dot, .arch-box.c-gray{ color: var(--text-faint); }
+  .arch-box.c-gray{ border-left-color: var(--border-strong); }
+  .arch-box.c-gray h4{ color: var(--text); }
+
+  .c-teal .arch-dot, .arch-box.c-teal{ color: var(--teal); }
+  .arch-box.c-teal{ border-left-color: var(--teal); }
+  .arch-box.c-teal h4{ color: var(--teal); }
+  .arch-box.c-teal:hover{ box-shadow: 0 0 0 1px var(--teal) inset; }
+
+  .c-purple .arch-dot, .arch-box.c-purple{ color: var(--purple); }
+  .arch-box.c-purple{ border-left-color: var(--purple); }
+  .arch-box.c-purple h4{ color: var(--purple); }
+  .arch-box.c-purple:hover{ box-shadow: 0 0 0 1px var(--purple) inset; }
+
+  .c-coral .arch-dot, .arch-box.c-coral{ color: var(--coral); }
+  .arch-box.c-coral{ border-left-color: var(--coral); }
+  .arch-box.c-coral h4{ color: var(--coral); }
+  .arch-box.c-coral:hover{ box-shadow: 0 0 0 1px var(--coral) inset; }
+
+  .arch-dot{ background: currentColor; }
+
   .project-meta{ display:flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
   .tag{
     font-family: var(--mono); font-size: 11.5px; color: var(--text-dim);
@@ -243,8 +291,8 @@
       AI agents to do the first pass of that work themselves.
     </p>
     <div class="cta-row">
-      <a class="btn primary" href="#project">View the AI agent project →</a>
-      <a class="btn" href="mailto:amankusingh987@gmail.com">Email me</a>
+      <a class="btn primary" href="https://github.com/Cloud-DevopswithAman/kuberenetes-AI-agent" target="_blank" rel="noopener">View the AI agent project →</a>
+      <a class="btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=amankusingh987@gmail.com" target="_blank" rel="noopener">Email me</a>
       <a class="btn" href="https://linkedin.com/in/amansingh987" target="_blank" rel="noopener">LinkedIn</a>
     </div>
 
@@ -295,6 +343,73 @@
       incident history through RAG, and exposes its diagnostic tools to any MCP-compatible
       client — turning a 20-minute manual triage into a single command.
     </p>
+    <p class="body-text" style="margin-top:16px;">
+      Instead of an engineer manually stitching together <code>kubectl describe</code>, logs, and
+      the events feed, the agent runs that whole investigation itself: it pulls live pod, log,
+      event, deployment, and network signals through a read-only Kubernetes inspection module,
+      retrieves similar past incidents through a Retrieval-Augmented Generation (RAG) pipeline
+      built on Azure AI Search, and reasons over all of it with an Azure OpenAI-backed LLM. The
+      result is a structured diagnosis — root cause, a confidence score, and a concrete
+      remediation step — grounded in real cluster evidence and prior resolution patterns, not
+      just the model's own memory.
+    </p>
+
+    <div class="arch-flow">
+      <div class="arch-eyebrow">architecture — data flow</div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-gray"></span><span class="arch-line"></span></div>
+        <div class="arch-box c-gray">
+          <h4>Kubernetes cluster</h4>
+          <p>Pods, deployments, services, events, and logs — the live evidence layer.</p>
+        </div>
+      </div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-teal"></span><span class="arch-line"></span></div>
+        <div class="arch-box c-teal">
+          <h4>Investigation layer</h4>
+          <p>Read-only Kubernetes inspection — pod status, log collection, event analysis,
+          deployment health, and network/selector checks — run through a FastAPI orchestration layer.</p>
+        </div>
+      </div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-purple"></span><span class="arch-line"></span></div>
+        <div class="arch-box c-purple">
+          <h4>RAG retrieval</h4>
+          <p>Historical incident reports and RCA docs, indexed with Azure OpenAI embeddings in
+          Azure AI Search, are retrieved to ground the diagnosis in real past resolutions.</p>
+        </div>
+      </div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-purple"></span><span class="arch-line"></span></div>
+        <div class="arch-box c-purple">
+          <h4>LLM reasoning layer</h4>
+          <p>Combines live cluster evidence with retrieved incident context to produce a root
+          cause, a confidence score, and step-by-step remediation commands.</p>
+        </div>
+      </div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-coral"></span><span class="arch-line"></span></div>
+        <div class="arch-box c-coral">
+          <h4>MCP server</h4>
+          <p>Exposes live cluster inspection and historical incident lookup as callable tools —
+          any MCP-compatible LLM client can invoke diagnostics directly.</p>
+        </div>
+      </div>
+
+      <div class="arch-step">
+        <div class="arch-marker"><span class="arch-dot c-gray"></span></div>
+        <div class="arch-box c-gray">
+          <h4>Frontend</h4>
+          <p>Kubeconfig context selection, investigation triggering, live result visualization,
+          and an in-memory history layer for auditability.</p>
+        </div>
+      </div>
+    </div>
 
     <div class="terminal">
       <div class="terminal-bar">
@@ -433,7 +548,7 @@
     <h2>Let's talk about DevOps, SRE, or agentic AI</h2>
     <p class="body-text">Open to DevOps, SRE, and AI-enabled platform engineering roles.</p>
     <div class="contact-row">
-      <a class="btn primary" href="mailto:amankusingh987@gmail.com">amankusingh987@gmail.com</a>
+      <a class="btn primary" href="https://mail.google.com/mail/?view=cm&fs=1&to=amankusingh987@gmail.com" target="_blank" rel="noopener">amankusingh987@gmail.com</a>
       <a class="btn" href="tel:8210848214">8210848214</a>
       <a class="btn" href="https://linkedin.com/in/amansingh987" target="_blank" rel="noopener">LinkedIn</a>
       <a class="btn" href="https://github.com/Cloud-DevopswithAman/kuberenetes-AI-agent" target="_blank" rel="noopener">GitHub</a>
@@ -442,5 +557,7 @@
   </div>
 </footer>
 
+</body>
+</html>
 </body>
 </html>

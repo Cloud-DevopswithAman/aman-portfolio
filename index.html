@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aman Kumar Singh — DevOps Engineer &amp; SRE</title>
+<style>
+  :root{
+    --bg: #0F1419;
+    --panel: #171D26;
+    --panel-2: #1D2430;
+    --border: #2A3240;
+    --border-strong: #3A4456;
+    --text: #E6E9EE;
+    --text-dim: #8B93A7;
+    --text-faint: #5A6577;
+    --green: #3ECF8E;
+    --amber: #F0B429;
+    --red: #E5534B;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: inherit; }
+  ::selection{ background: var(--green); color: #0F1419; }
+
+  /* ambient grid backdrop */
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ---------- nav ---------- */
+  nav{
+    position: sticky; top:0; z-index: 10;
+    background: rgba(15,20,25,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap{ display:flex; align-items:center; justify-content: space-between; height: 60px; }
+  .nav-brand{ font-family: var(--mono); font-size: 14px; color: var(--text); display:flex; align-items:center; gap:8px; }
+  .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink:0; }
+  .nav-links{ display:flex; gap:28px; font-family: var(--mono); font-size: 13px; color: var(--text-dim); }
+  .nav-links a{ text-decoration:none; transition: color .15s; }
+  .nav-links a:hover, .nav-links a:focus-visible{ color: var(--green); }
+  .nav-links{ display: none; }
+  @media(min-width: 640px){ .nav-links{ display:flex; } }
+
+  /* ---------- hero / status panel ---------- */
+  header.hero{ padding: 72px 0 40px; }
+  .status-line{
+    font-family: var(--mono); font-size: 12px; color: var(--green);
+    display:flex; align-items:center; gap:8px; letter-spacing: 0.04em;
+    margin-bottom: 28px;
+  }
+  .status-line .dot{ animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity: 0.35; } }
+  @media (prefers-reduced-motion: reduce){ .status-line .dot{ animation:none; } }
+
+  h1.name{
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 52px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 10px;
+  }
+  .role{
+    font-family: var(--mono);
+    font-size: clamp(14px, 2vw, 17px);
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+  .role span{ color: var(--text); }
+  .tagline{
+    max-width: 560px;
+    color: var(--text-dim);
+    font-size: 16px;
+    margin-bottom: 36px;
+  }
+  .cta-row{ display:flex; flex-wrap: wrap; gap: 12px; margin-bottom: 52px; }
+  .btn{
+    font-family: var(--mono); font-size: 13px;
+    padding: 11px 18px; border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: border-color .15s, background .15s, transform .1s;
+  }
+  .btn:hover, .btn:focus-visible{ border-color: var(--green); background: rgba(62,207,142,0.06); }
+  .btn:active{ transform: scale(0.98); }
+  .btn.primary{ background: var(--green); color: #0A130E; border-color: var(--green); font-weight: 600; }
+  .btn.primary:hover{ background: #35b87c; }
+
+  /* metrics grid */
+  .metrics{
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  @media(min-width: 560px){ .metrics{ grid-template-columns: repeat(4, 1fr); } }
+  .metric{ background: var(--panel); padding: 20px 16px; }
+  .metric .val{ font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--green); }
+  .metric .lbl{ font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ---------- sections ---------- */
+  section{ padding: 64px 0; border-top: 1px solid var(--border); }
+  .eyebrow{
+    font-family: var(--mono); font-size: 12px; color: var(--amber);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:"//"; color: var(--text-faint); }
+  h2{ font-size: clamp(24px, 4vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 20px; }
+  p.body-text{ color: var(--text-dim); max-width: 640px; font-size: 15.5px; }
+
+  /* about */
+  .about-grid{ display:grid; gap: 32px; grid-template-columns: 1fr; }
+  @media(min-width: 720px){ .about-grid{ grid-template-columns: 1.3fr 1fr; } }
+  .fact-list{ display:flex; flex-direction:column; gap: 14px; }
+  .fact{ display:flex; gap: 12px; font-size: 14px; }
+  .fact .k{ font-family: var(--mono); color: var(--text-faint); min-width: 110px; flex-shrink:0; }
+  .fact .v{ color: var(--text); }
+
+  /* ---------- signature: investigation terminal ---------- */
+  .terminal{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    background: var(--panel-2);
+  }
+  .terminal-bar .tdot{ width:10px; height:10px; border-radius:50%; }
+  .terminal-bar .tdot:nth-child(1){ background:#E5534B; }
+  .terminal-bar .tdot:nth-child(2){ background:#F0B429; }
+  .terminal-bar .tdot:nth-child(3){ background:#3ECF8E; }
+  .terminal-bar .tlabel{ font-family: var(--mono); font-size: 12px; color: var(--text-faint); margin-left: 8px; }
+  .terminal-body{ padding: 22px 20px; font-family: var(--mono); font-size: 13.5px; }
+  .term-line{
+    opacity: 0; transform: translateY(4px);
+    animation: reveal 0.4s ease forwards;
+    margin-bottom: 8px;
+  }
+  @media (prefers-reduced-motion: reduce){ .term-line{ opacity:1; transform:none; animation:none; } }
+  .term-line.cmd{ color: var(--text); }
+  .term-line.cmd::before{ content: "$ "; color: var(--green); }
+  .term-line.ok{ color: var(--text-dim); }
+  .term-line.ok .check{ color: var(--green); }
+  .term-line.result{ color: var(--text); margin-top: 12px; }
+  .term-line.result .k{ color: var(--text-faint); }
+  .term-line.result .conf{ color: var(--amber); font-weight: 700; }
+
+  .project-meta{ display:flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .tag{
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-dim);
+    border: 1px solid var(--border-strong); border-radius: 20px;
+    padding: 5px 12px;
+  }
+  .project-links{ display:flex; gap: 16px; margin-top: 24px; font-family: var(--mono); font-size: 13px; }
+  .project-links a{ text-decoration: none; color: var(--green); border-bottom: 1px solid transparent; }
+  .project-links a:hover, .project-links a:focus-visible{ border-bottom-color: var(--green); }
+
+  /* ---------- experience log ---------- */
+  .log-entry{ display:flex; gap: 24px; padding: 24px 0; border-top: 1px solid var(--border); }
+  .log-entry:first-child{ border-top: none; }
+  .log-time{ font-family: var(--mono); font-size: 12px; color: var(--text-faint); min-width: 130px; flex-shrink: 0; padding-top: 3px; }
+  .log-content h3{ font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .log-content .co{ font-family: var(--mono); font-size: 12.5px; color: var(--green); margin-bottom: 10px; }
+  .log-content ul{ list-style: none; display:flex; flex-direction:column; gap: 8px; }
+  .log-content li{ font-size: 14.5px; color: var(--text-dim); padding-left: 18px; position: relative; }
+  .log-content li::before{ content:"›"; position:absolute; left:0; color: var(--text-faint); }
+
+  /* ---------- skills ---------- */
+  .cap-grid{ display:grid; grid-template-columns: 1fr; gap: 14px; }
+  @media(min-width: 640px){ .cap-grid{ grid-template-columns: 1fr 1fr; } }
+  .cap-panel{ background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .cap-panel h4{ font-family: var(--mono); font-size: 12px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .cap-panel .items{ display:flex; flex-wrap: wrap; gap: 6px; }
+  .cap-panel .items span{ font-size: 12.5px; color: var(--text-dim); background: var(--panel-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 5px; }
+
+  /* certifications */
+  .cert-row{ display:flex; flex-wrap: wrap; gap: 12px; }
+  .cert{ display:flex; align-items:center; gap:10px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13.5px; }
+  .cert .badge-dot{ width:6px; height:6px; border-radius:50%; background: var(--green); flex-shrink:0; }
+
+  /* contact */
+  footer{ padding: 64px 0 48px; text-align: center; }
+  footer h2{ margin-bottom: 12px; }
+  footer p.body-text{ margin: 0 auto 28px; }
+  .contact-row{ display:flex; flex-wrap: wrap; justify-content:center; gap: 14px; margin-bottom: 40px; }
+  .foot-meta{ font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
+
+  @media(max-width: 480px){
+    .cta-row{ flex-direction: column; }
+    .btn{ justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand"><span class="dot"></span> aman-singh.sre</div>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#project">project</a>
+      <a href="#experience">experience</a>
+      <a href="#skills">skills</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="status-line"><span class="dot"></span> STATUS: OPEN TO OPPORTUNITIES</div>
+    <h1 class="name">Aman Kumar Singh</h1>
+    <p class="role">DevOps Engineer <span>·</span> Site Reliability Engineer <span>·</span> AI-Enabled Platform Automation</p>
+    <p class="tagline">
+      I keep production systems reliable across AWS and Azure — and I'm now teaching
+      AI agents to do the first pass of that work themselves.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="#project">View the AI agent project →</a>
+      <a class="btn" href="mailto:amankusingh987@gmail.com">Email me</a>
+      <a class="btn" href="https://linkedin.com/in/amansingh987" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="val">4+</div><div class="lbl">years in production</div></div>
+      <div class="metric"><div class="val">25+</div><div class="lbl">microservices supported</div></div>
+      <div class="metric"><div class="val">80%</div><div class="lbl">less provisioning effort</div></div>
+      <div class="metric"><div class="val">60%</div><div class="lbl">less operational toil</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow">about</div>
+    <div class="about-grid">
+      <div>
+        <h2>Infrastructure work, with AI joining the on-call rotation</h2>
+        <p class="body-text">
+          I've spent the last four years designing CI/CD platforms, automating cloud
+          infrastructure with Terraform and Ansible, and running production Kubernetes and
+          OpenShift environments across AWS and Azure. Most of that work comes down to the
+          same question: when something breaks, how fast can we find out why?
+          <br><br>
+          Lately I've been answering that question with agentic AI — building a Kubernetes
+          troubleshooting assistant that investigates clusters, retrieves relevant past
+          incidents, and reasons over the evidence the way an experienced on-call engineer
+          would. It's the project I'm most excited to talk about.
+        </p>
+      </div>
+      <div class="fact-list">
+        <div class="fact"><span class="k">Based</span><span class="v">India</span></div>
+        <div class="fact"><span class="k">Current role</span><span class="v">DevOps / SRE, TCS</span></div>
+        <div class="fact"><span class="k">Clouds</span><span class="v">AWS, Azure</span></div>
+        <div class="fact"><span class="k">Focus</span><span class="v">Kubernetes, IaC, AI-enabled ops</span></div>
+        <div class="fact"><span class="k">Certified</span><span class="v">AWS SAA, AWS CCP, GCP Architect</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="project">
+  <div class="wrap">
+    <div class="eyebrow">signature project</div>
+    <h2>Agentic Kubernetes Troubleshooting Assistant</h2>
+    <p class="body-text">
+      An AI agent that investigates live Kubernetes clusters, grounds its reasoning in past
+      incident history through RAG, and exposes its diagnostic tools to any MCP-compatible
+      client — turning a 20-minute manual triage into a single command.
+    </p>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+        <span class="tlabel">investigation — payment-service</span>
+      </div>
+      <div class="terminal-body" id="term">
+        <div class="term-line cmd" style="animation-delay:0.1s">investigate --incident payment-service-unavailable</div>
+        <div class="term-line ok" style="animation-delay:0.5s"><span class="check">✓</span> pods checked</div>
+        <div class="term-line ok" style="animation-delay:0.9s"><span class="check">✓</span> logs collected</div>
+        <div class="term-line ok" style="animation-delay:1.3s"><span class="check">✓</span> events analyzed</div>
+        <div class="term-line ok" style="animation-delay:1.7s"><span class="check">✓</span> similar past incidents retrieved (RAG)</div>
+        <div class="term-line ok" style="animation-delay:2.1s"><span class="check">✓</span> root cause correlated</div>
+        <div class="term-line result" style="animation-delay:2.6s"><span class="k">root cause</span> — CrashLoopBackOff: DATABASE_URL missing</div>
+        <div class="term-line result" style="animation-delay:2.9s"><span class="k">confidence</span> — <span class="conf">94%</span></div>
+        <div class="term-line result" style="animation-delay:3.2s"><span class="k">suggested fix</span> — update deployment.yaml, add secret reference</div>
+      </div>
+    </div>
+
+    <div class="project-meta">
+      <span class="tag">Read-only K8s inspection</span>
+      <span class="tag">RAG · Azure AI Search</span>
+      <span class="tag">Model Context Protocol server</span>
+      <span class="tag">Azure OpenAI reasoning</span>
+      <span class="tag">FastAPI orchestration</span>
+      <span class="tag">Least-privilege RBAC</span>
+    </div>
+
+    <div class="project-links">
+      <a href="https://github.com/Cloud-DevopswithAman/kuberenetes-AI-agent" target="_blank" rel="noopener">View source on GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="eyebrow">experience log</div>
+    <h2>Where this was built</h2>
+
+    <div class="log-entry">
+      <div class="log-time">2022 — present</div>
+      <div class="log-content">
+        <h3>AWS &amp; Multi-Cloud — DevOps / SRE</h3>
+        <div class="co">Tata Consultancy Services</div>
+        <ul>
+          <li>Architected CI/CD platforms supporting 25+ microservices with integrated SAST, vulnerability scanning, and deployment automation</li>
+          <li>Built reusable Terraform modules for EKS, IAM, and VPC — cutting provisioning effort by 80%+</li>
+          <li>Designed API Gateway + Lambda auth layer, enabling self-serve onboarding for new consumer teams</li>
+          <li>Ran enterprise observability with Prometheus, Grafana, and CloudWatch for proactive incident response</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="log-entry">
+      <div class="log-time">2022 — present</div>
+      <div class="log-content">
+        <h3>Azure — DevOps &amp; Site Reliability Engineering</h3>
+        <div class="co">Tata Consultancy Services</div>
+        <ul>
+          <li>Built and maintained enterprise CI/CD pipelines for AKS-hosted applications</li>
+          <li>Administered production AKS clusters — upgrades, scaling, ingress, secrets, certificate lifecycle</li>
+          <li>Developed a shared automation library that removed 60% of recurring operational toil</li>
+          <li>Integrated Azure OpenAI-powered workflows for CI/CD troubleshooting and root cause analysis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="eyebrow">capabilities</div>
+    <h2>What I work with</h2>
+    <div class="cap-grid">
+      <div class="cap-panel">
+        <h4>Cloud</h4>
+        <div class="items">
+          <span>EKS</span><span>ECS</span><span>Lambda</span><span>API Gateway</span>
+          <span>IAM</span><span>AKS</span><span>APIM</span><span>Azure Monitor</span>
+        </div>
+      </div>
+      <div class="cap-panel">
+        <h4>IaC &amp; Pipelines</h4>
+        <div class="items">
+          <span>Terraform</span><span>Terragrunt</span><span>Ansible</span><span>Helm</span>
+          <span>Jenkins</span><span>GitHub Actions</span><span>ArgoCD</span><span>GitOps</span>
+        </div>
+      </div>
+      <div class="cap-panel">
+        <h4>Containers &amp; CI/CD</h4>
+        <div class="items">
+          <span>Docker</span><span>Kubernetes</span><span>OpenShift</span><span>Harness</span>
+          <span>SonarQube</span><span>Trivy</span><span>Nexus</span>
+        </div>
+      </div>
+      <div class="cap-panel">
+        <h4>Observability &amp; Security</h4>
+        <div class="items">
+          <span>Prometheus</span><span>Grafana</span><span>ELK</span><span>RBAC</span>
+          <span>OIDC</span><span>OPA/Gatekeeper</span><span>Kong</span>
+        </div>
+      </div>
+      <div class="cap-panel">
+        <h4>AI &amp; Platform Automation</h4>
+        <div class="items">
+          <span>LLMs</span><span>RAG</span><span>Vector Search</span><span>MCP</span>
+          <span>Azure OpenAI</span><span>Amazon Bedrock</span><span>Agentic AI</span>
+        </div>
+      </div>
+      <div class="cap-panel">
+        <h4>SRE &amp; Operations</h4>
+        <div class="items">
+          <span>Incident Mgmt</span><span>RCA</span><span>SLI/SLO/SLA</span>
+          <span>Capacity Planning</span><span>On-call</span><span>DR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certs">
+  <div class="wrap">
+    <div class="eyebrow">certifications</div>
+    <h2>Verified</h2>
+    <div class="cert-row">
+      <div class="cert"><span class="badge-dot"></span> AWS Certified Solutions Architect – Associate</div>
+      <div class="cert"><span class="badge-dot"></span> AWS Certified Cloud Practitioner</div>
+      <div class="cert"><span class="badge-dot"></span> Google Cloud Professional Cloud Architect</div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center;">get in touch</div>
+    <h2>Let's talk about DevOps, SRE, or agentic AI</h2>
+    <p class="body-text">Open to DevOps, SRE, and AI-enabled platform engineering roles.</p>
+    <div class="contact-row">
+      <a class="btn primary" href="mailto:amankusingh987@gmail.com">amankusingh987@gmail.com</a>
+      <a class="btn" href="tel:8210848214">8210848214</a>
+      <a class="btn" href="https://linkedin.com/in/amansingh987" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/Cloud-DevopswithAman/kuberenetes-AI-agent" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="foot-meta">// last deployed: 2026 · built with intent, no framework</div>
+  </div>
+</footer>
+
+</body>
+</html>
